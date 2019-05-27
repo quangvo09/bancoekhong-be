@@ -37,12 +37,12 @@ const takePhoto = function ({ photo, message }, done) {
 }
 
 const takeScreenShot = async (html) => {
-  const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-  const page = await browser.newPage();
-  await page.setViewport({
-    width: 600,
-    height: 518
+  const browser = await puppeteer.launch({
+    headless: false, // The browser is visible
+    ignoreHTTPSErrors: true,
+    args: [`--window-size=${600},${518}`] // new option
   });
+  const page = await browser.newPage();
   await page.setContent(html);
   const base64 = await page.screenshot({ encoding: "base64" });
   await browser.close();
