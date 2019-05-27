@@ -1,5 +1,7 @@
 
 var crypto = require('crypto-js');
+const puppeteer = require('puppeteer');
+var ejs = require('ejs');
 var { savePredict, getPredict } = require('./db');
 const array = [
   'Ê sắc nha bợn....',
@@ -20,9 +22,29 @@ const predict = function (playerId) {
   return p;
 }
 
+const takePhoto = function ({ photo, message }, done) {
+  var options = { photo, message };
+  ejs.renderFile('./predict.ejs', options, function(err, html){
+    if (err) return done(null);
+
+    takeScreenShot(html)
+      .then(base64 => done(base64))
+  });
+}
+
+const takeScreenShot = async (html) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setContent(html);
+  const base64 = await page.screenshot({ encoding: "base64" });
+  await browser.close();
+  return base64;
+}
+
 module.exports = function (app) {
   app.post('/get-predict', function (request, response) {
     var playerId = request.body.playerId;
+    var photo = request.body.photo;
     var signature = request.body.signature;
 
     // Validate request data
@@ -32,12 +54,24 @@ module.exports = function (app) {
     if (isValid) {
       // Retrieves the context Id from encoded signature payload
       var p = predict(playerId);
-      response.json({
-        'success': true,
-        'playerId': playerId,
-        'empty': false,
-        'data': p
-      });
+      takePhoto({ photo, message: p.message }, base64 => {
+        if (!base64) {
+          response.json({
+            'success': false,
+            'error': { message: 'server error' }
+          });
+          return;
+        }
+
+        response.json({
+          'success': true,
+          'playerId': playerId,
+          'empty': false,
+          'data': p,
+          base64
+        });
+      })
+      
     } else {
       // Returns a json with success:false and invalid signature
       // in case signature couldn't be verified
