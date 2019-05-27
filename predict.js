@@ -46,7 +46,7 @@ const takeScreenShot = async (html) => {
   await page.setContent(html);
   const base64 = await page.screenshot({ encoding: "base64" });
   await browser.close();
-  return base64;
+  return base64; 
 }
 
 module.exports = function (app) {
