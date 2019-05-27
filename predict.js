@@ -40,7 +40,11 @@ const takeScreenShot = async (html) => {
   const browser = await puppeteer.launch({
     headless: false, // The browser is visible
     ignoreHTTPSErrors: true,
-    args: [`--window-size=${600},${518}`] // new option
+    args: [
+      `--window-size=${600},${518}`,
+      '--no-sandbox',
+      '--disable-setuid-sandbox'
+    ] // new option
   });
   const page = await browser.newPage();
   await page.setContent(html);
