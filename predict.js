@@ -38,10 +38,10 @@ const takePhoto = function ({ photo, message }, done) {
 
 const takeScreenShot = async (html) => {
   const browser = await puppeteer.launch({
-    ignoreHTTPSErrors: true,
     args: [
       `--window-size=${600},${518}`,
-      '--no-sandbox'
+      '--no-sandbox',
+      '--disable-setuid-sandbox'
     ] // new option
   });
   const page = await browser.newPage();
