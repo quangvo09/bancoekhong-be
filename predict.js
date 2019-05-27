@@ -38,7 +38,6 @@ const takePhoto = function ({ photo, message }, done) {
 
 const takeScreenShot = async (html) => {
   const browser = await puppeteer.launch({
-    headless: false, // The browser is visible
     ignoreHTTPSErrors: true,
     args: [
       `--window-size=${600},${518}`,
