@@ -29,6 +29,10 @@ const takePhoto = function ({ photo, message }, done) {
 
     takeScreenShot(html)
       .then(base64 => done(base64))
+      .catch(err => {
+        console.log(err);
+        return done(null);
+      })
   });
 }
 
