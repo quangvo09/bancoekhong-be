@@ -5,9 +5,9 @@ var ejs = require('ejs');
 var { savePredict, getPredict } = require('./db');
 const array = [
   'Ê sắc nha bợn....',
-  'Đào hoa thế cơ mà!',
-  'Tui chịu thua...',
-  'Có trời mà biết...'
+  'Có trời mà biết...',
+  'Còn ế dài dài nha chế',
+  'Tui còn ế nói chi bợn'
 ];
 
 const predict = function (playerId) {
